@@ -1,47 +1,33 @@
 language: go
-
 sudo: false
-
 os:
-  - linux
-  - osx
-
+- linux
+- osx
 go:
-  - 1.12.x
-  - 1.13.x
-  - master
-
+- 1.12.x
+- 1.13.x
+- master
 env:
-  global: 
-    - DOCKER_USER=vivino
-    - GO111MODULE=on
-
-# needed for the docker pipe
+  global:
+  - DOCKER_USER=vivino
+  - GO111MODULE=on
+  - secure: d5kWin4ca9BnAfDfq/thMspbSc/824T0u123XOtMDOgZwGSXvctugWArF90YmtcbF+ZvGkLOkt6By9e/cpiSgbYemu0qzyckYe1aMMVUOIsHBv5Q+i7E7Hlg/J+LlusR7qltcJNKz3dSnTjyBaev/4vVS0x7+XFyrQql/9kXYqmckn09iligEB7AesvQneGZ0B0EhNXRSfx7CJ0kUYMCyIJmrZWos9b37BF3ptkreDDPmhZXeBz1dqcA63Sb4ytQ1A2zqt3EM2vhzFjAvUuvOuLFC1mDpseqt7YcUPIz0XdG6kWfhgUfqscXmXR+eu1wDuEkRXR4u181Mia9MDScNbFgHkalL93dlAsVGbWuMrc3aavJFON7wfifJX17krQzPbrMlLbXoyGHQ5IKyG51GbV3md0KzgzefeIYmeas9Ch9u60mtCEa9UoqYCe/q9yGNEBA8E+9WJ8B0MPojhAokPdrpx+HfFpGlk9WOmuO9igfVdbwBke681Sc3T7RAxPJ85pUxuM2GJ/1dP/3se7+H2XMlb/7kE2/Oy+epn93anBLDETzWfubJnszpMc2BF3/ZNcie7r93Y/G2D/hd4X6NzQWgFm9Nc8MQ7FNjsjc5kht943ibO+ofUM8Pbn/x8OgZuZPbKInwF+cl3PPEF/HN8UwQaMt+keMBrJy+Zqs7x4=
 services:
-  - docker
-
+- docker
 script:
- - diff <(gofmt -d .) <(printf "")
- - go test ./...
- - go test -cpu=1 -short -race ./...
- - go test -cpu=4 -short -race ./...
-
+- diff <(gofmt -d .) <(printf "")
+- go test ./...
+- go test -cpu=1 -short -race ./...
+- go test -cpu=4 -short -race ./...
 matrix:
   allow_failures:
-    - go: 'master'
+  - go: master
   fast_finish: true
-
-after_success:
-  # docker login is required if you want to push docker images.
-  # DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
-  # - test -n "$TRAVIS_TAG" && docker login -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
-
-# calls goreleaser
+after_success: 
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: curl -sL https://git.io/goreleaser | bash
-    on:
-      tags: true
-      condition: $TRAVIS_OS_NAME = linux
-
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: "$TRAVIS_OS_NAME = linux"
